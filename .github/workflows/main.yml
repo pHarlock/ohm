@@ -1,22 +1,32 @@
-name: Build OpenHardwareMonitorLib DLL Only
+name: Build Full OpenHardwareMonitor App
 
 on: [push, workflow_dispatch]
 
 jobs:
-  build-dll:
-    runs-on: windows-latest
+  build:
+    runs-on: windows-2019
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v2
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Build Library Only
-      run: msbuild OpenHardwareMonitorLib.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.8
+    - name: Restore NuGet Packages
+      run: nuget restore OpenHardwareMonitor.sln
 
-    - name: Upload DLL Artifact
+    - name: Build Full Solution
+      run: msbuild OpenHardwareMonitor.sln /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.5
+
+    - name: Upload Binaries Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: OpenHardwareMonitorLib-DLL
-        path: "**/OpenHardwareMonitorLib.dll"
+        name: OpenHardwareMonitor-App
+        path: |
+          **/bin/Release/
+          **/Bin/Release/
