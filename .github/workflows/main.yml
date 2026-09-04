@@ -12,8 +12,8 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Build Full Solution
-      run: msbuild OpenHardwareMonitor.sln /p:Configuration=Release /p:Platform="Any CPU"
+    - name: Build Library Only
+      run: msbuild OpenHardwareMonitorLib.csproj /p:Configuration=Release /p:Platform="Any CPU" /p:TargetFrameworkVersion=v4.8
 
     - name: Upload DLL Artifact
       uses: actions/upload-artifact@v4
